@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Papan Skor Badminton</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* RESET TOTAL UNTUK TOUCH */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-touch-callout: none !important;
+            -webkit-user-select: none !important;
+            user-select: none !important;
+        }
+        
+        body {
+            background: #0a1a2f;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 6px;
+            margin: 0;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 480px;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #0a2472, #1e3a8a);
+            color: white;
+            padding: 16px 12px;
+            text-align: center;
+            border-bottom: 5px solid #3b82f6;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .header h1 i {
+            color: #ffd700;
+            font-size: 1.6rem;
+        }
+        
+        .header p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        
+        /* SCORE UTAMA - KIRI KANAN */
+        .score-container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 12px 10px;
+            background: #f0f7ff;
+        }
+        
+        .player {
+            width: 50%;
+            background: white;
+            border-radius: 24px;
+            padding: 20px 8px;
+            text-align: center;
+            box-shadow: 0 8px 0 #b0c4de, 0 10px 20px rgba(0,0,0,0.1);
+            border: 3px solid #cbd5e1;
+            transition: all 0.05s ease;
+        }
+        
+        .player:active {
+            transform: scale(0.98);
+        }
+        
+        .player.active {
+            border-color: #2563eb;
+            box-shadow: 0 8px 0 #1e40af, 0 10px 20px rgba(37,99,235,0.2);
+            background: #eff6ff;
+        }
+        
+        .player.winner {
+            border-color: #10b981;
+            box-shadow: 0 8px 0 #0b6e4f, 0 10px 20px rgba(16,185,129,0.2);
+            background: #f0fdf4;
+        }
+        
+        .player-name {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #0a2472;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 3px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .score {
+            font-size: 5rem;
+            font-weight: 900;
+            color: #0a2472;
+            margin: 5px 0;
+            line-height: 1;
+            text-shadow: 4px 4px 0 #e2e8f0;
+        }
+        
+        /* TOMBOL BESAR UNTUK TOUCH */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+            padding: 0 6px;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 20px 0;
+            font-size: 2.2rem;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.05s ease;
+            font-weight: 700;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.2);
+            color: white;
+            -webkit-appearance: none !important;
+            appearance: none !important;
+            touch-action: manipulation !important;
+        }
+        
+        .btn:active {
+            transform: translateY(6px);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+        
+        .btn-increment {
+            background: #2563eb;
+            background: linear-gradient(145deg, #2563eb, #1e40af);
+        }
+        
+        .btn-decrement {
+            background: #64748b;
+            background: linear-gradient(145deg, #64748b, #475569);
+            color: white;
+        }
+        
+        /* SET SECTION */
+        .set-section {
+            padding: 16px 12px;
+            background: #e6f3ff;
+            border-top: 5px solid #2563eb;
+            border-bottom: 2px solid #cbd5e1;
+        }
+        
+        .set-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .set-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #0a2472;
+            background: white;
+            padding: 8px 18px;
+            border-radius: 50px;
+            box-shadow: 0 4px 0 #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-set {
+            background: #10b981;
+            background: linear-gradient(145deg, #10b981, #059669);
+            color: white;
+            padding: 14px 20px;
+            font-size: 0.95rem;
+            border-radius: 50px;
+            box-shadow: 0 6px 0 #0b6e4f;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+        }
+        
+        .btn-set:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0b6e4f;
+        }
+        
+        .set-container {
+            display: flex;
+            flex-direction: row;
+            gap: 12px;
+        }
+        
+        .set-score-card {
+            flex: 1;
+            background: white;
+            border-radius: 20px;
+            padding: 16px 8px;
+            box-shadow: 0 6px 0 #cbd5e1;
+            border: 2px solid #94a3b8;
+        }
+        
+        .set-player-name {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #0a2472;
+            margin-bottom: 12px;
+            text-align: center;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #cbd5e1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        
+        .set-scores {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .set-score {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: 800;
+            background: #f1f5f9;
+            border-radius: 12px;
+            border: 2px solid #94a3b8;
+            color: #1e293b;
+        }
+        
+        .set-score.won {
+            background: #dbeafe;
+            border-color: #2563eb;
+            color: #1e40af;
+        }
+        
+        .set-score.lost {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+        
+        .set-total {
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #0a2472;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px dashed #cbd5e1;
+        }
+        
+        .set-total span {
+            font-size: 1.3rem;
+            color: #2563eb;
+            font-weight: 900;
+            margin-left: 5px;
+        }
+        
+        .set-badge {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+        
+        .set-info {
+            margin-top: 16px;
+            padding: 10px 12px;
+            background: #ffedd5;
+            border-radius: 50px;
+            border: 1px solid #f97316;
+        }
+        
+        .set-info p {
+            color: #7b341e;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-weight: 600;
+        }
+        
+        /* MATCH INFO */
+        .match-info {
+            padding: 16px 12px;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .match-status {
+            font-size: 1rem;
+            font-weight: 800;
+            text-align: center;
+            padding: 14px;
+            background: #f1f5f9;
+            border-radius: 60px;
+            border: 3px solid #94a3b8;
+            box-shadow: 0 4px 0 #64748b;
+            color: #0a2472;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        
+        .btn-reset {
+            flex: 1;
+            background: #f1f5f9;
+            background: linear-gradient(145deg, #f1f5f9, #e2e8f0);
+            color: #334155;
+            border: 3px solid #94a3b8;
+            padding: 16px 8px;
+            font-size: 0.9rem;
+            border-radius: 60px;
+            box-shadow: 0 6px 0 #64748b;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+        }
+        
+        .btn-reset:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #64748b;
+        }
+        
+        .btn-reset.danger {
+            background: linear-gradient(145deg, #fee2e2, #fecaca);
+            border-color: #f87171;
+            color: #991b1b;
+            box-shadow: 0 6px 0 #b91c1c;
+        }
+        
+        .btn-reset.danger:active {
+            box-shadow: 0 2px 0 #b91c1c;
+        }
+        
+        .footer {
+            padding: 14px;
+            text-align: center;
+            background: linear-gradient(135deg, #0a2472, #1e3a8a);
+            color: white;
+            font-size: 0.7rem;
+            border-top: 5px solid #3b82f6;
+        }
+        
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .score-update {
+            animation: pop 0.15s ease;
+            color: #2563eb !important;
+        }
+        
+        /* FIX UNTUK TOUCH DI HP */
+        button, .btn, .btn-reset, .btn-set, .btn-increment, .btn-decrement {
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        
+        /* HILANGKAN DELAY TAP DI HP */
+        a, button, input, optgroup, select, textarea {
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* UNTUK LAYAR KECIL */
+        @media (max-width: 380px) {
+            .score { font-size: 4.2rem; }
+            .btn { padding: 16px 0; font-size: 2rem; }
+            .player-name { font-size: 1.1rem; }
+            .set-score { width: 38px; height: 38px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>
+                <i class="fas fa-shuttlecock"></i> BADMINTON
+            </h1>
+            <p>⬅️ KIRI • KANAN ➡️</p>
+        </div>
+        
+        <!-- ===== SKOR KIRI VS KANAN ===== -->
+        <div class="score-container">
+            <!-- PEMAIN KIRI -->
+            <div class="player" id="playerLeft">
+                <div class="player-name">
+                    <i class="fas fa-user"></i> KIRI
+                </div>
+                <div class="score" id="scoreLeft">0</div>
+                <div class="controls">
+                    <!-- FIX: PAKAI SATU EVENT AJA, YANG LAIN PREVENT DEFAULT -->
+                    <button class="btn btn-decrement" ontouchstart="handleTouch(event, 'left', -1)" onclick="handleClick(event, 'left', -1)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="btn btn-increment" ontouchstart="handleTouch(event, 'left', 1)" onclick="handleClick(event, 'left', 1)">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- PEMAIN KANAN -->
+            <div class="player" id="playerRight">
+                <div class="player-name">
+                    <i class="fas fa-user"></i> KANAN
+                </div>
+                <div class="score" id="scoreRight">0</div>
+                <div class="controls">
+                    <!-- FIX: PAKAI SATU EVENT AJA, YANG LAIN PREVENT DEFAULT -->
+                    <button class="btn btn-decrement" ontouchstart="handleTouch(event, 'right', -1)" onclick="handleClick(event, 'right', -1)">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="btn btn-increment" ontouchstart="handleTouch(event, 'right', 1)" onclick="handleClick(event, 'right', 1)">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- SET GAME -->
+        <div class="set-section">
+            <div class="set-header">
+                <div class="set-title">
+                    <i class="fas fa-trophy"></i>(Best of 3)
+                </div>
+                <button class="btn-set" ontouchstart="handleSetTouch(event)" onclick="handleSetClick(event)" id="btnAddSet">
+                    <i class="fas fa-plus-circle"></i> TAMBAH SET
+                </button>
+            </div>
+            
+            <div class="set-container">
+                <!-- SET KIRI -->
+                <div class="set-score-card">
+                    <div class="set-player-name">
+                        <i class="fas fa-user"></i> KIRI
+                        <span class="set-badge" id="setBadgeLeft">0</span>
+                    </div>
+                    <div class="set-scores" id="setScoresLeft">
+                        <!-- JS FILL -->
+                    </div>
+                    <div class="set-total">
+                        MENANG: <span id="setTotalLeft">0</span>
+                    </div>
+                </div>
+                
+                <!-- SET KANAN -->
+                <div class="set-score-card">
+                    <div class="set-player-name">
+                        <i class="fas fa-user"></i> KANAN
+                        <span class="set-badge" id="setBadgeRight">0</span>
+                    </div>
+                    <div class="set-scores" id="setScoresRight">
+                        <!-- JS FILL -->
+                    </div>
+                    <div class="set-total">
+                        MENANG: <span id="setTotalRight">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="set-info">
+                <p>
+                    <i class="fas fa-info-circle"></i> 21 POIN (SELISIH 2) • MAKS 30
+                </p>
+            </div>
+        </div>
+        
+        <!-- STATUS & RESET -->
+        <div class="match-info">
+            <div class="match-status" id="matchStatus">
+                <i class="fas fa-play"></i> KIRI 0 : 0 KANAN • SET 1
+            </div>
+            
+            <div class="button-group">
+                <button class="btn-reset" ontouchstart="handleResetGameTouch(event)" onclick="handleResetGameClick(event)">
+                    <i class="fas fa-undo-alt"></i> RESET GAME
+                </button>
+                <button class="btn-reset danger" ontouchstart="handleResetAllTouch(event)" onclick="handleResetAllClick(event)">
+                    <i class="fas fa-redo-alt"></i> RESET ALL
+                </button>
+            </div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="footer">
+            <p>🏸 Badminton Score | Design by AHMAD BAHREISY (OSY)</p>
+        </div>
+    </div>
+
+    <script>
+        // =========================================
+        // PAPAN SKOR BADMINTON - FIX LOMPAT 2
+        // =========================================
+        
+        // STATE
+        let scoreLeft = 0;
+        let scoreRight = 0;
+        let setScoresLeft = [];
+        let setScoresRight = [];
+        let setWinsLeft = 0;
+        let setWinsRight = 0;
+        let currentSet = 1;
+        const maxSets = 3;
+        let matchFinished = false;
+        
+        // FLAG UNTUK CEK DOUBLE EXECUTION
+        let isProcessing = false;
+        
+        // AMBIL ELEMEN
+        const scoreLeftEl = document.getElementById('scoreLeft');
+        const scoreRightEl = document.getElementById('scoreRight');
+        const setScoresLeftEl = document.getElementById('setScoresLeft');
+        const setScoresRightEl = document.getElementById('setScoresRight');
+        const setTotalLeftEl = document.getElementById('setTotalLeft');
+        const setTotalRightEl = document.getElementById('setTotalRight');
+        const setBadgeLeftEl = document.getElementById('setBadgeLeft');
+        const setBadgeRightEl = document.getElementById('setBadgeRight');
+        const matchStatusEl = document.getElementById('matchStatus');
+        const btnAddSet = document.getElementById('btnAddSet');
+        const playerLeftEl = document.getElementById('playerLeft');
+        const playerRightEl = document.getElementById('playerRight');
+        
+        // ========== FIX UTAMA: CEK DOUBLE EXECUTION ==========
+        
+        // HANDLE UNTUK TOUCH EVENT (HP)
+        window.handleTouch = function(event, player, change) {
+            // CEK APAKAH SUDAH DIPROSES
+            if (isProcessing) {
+                event.preventDefault();
+                return;
+            }
+            
+            isProcessing = true;
+            event.preventDefault(); // MASTIKAN GA DOUBLE
+            updateScore(player, change);
+            
+            // RESET FLAG SETELAH 300ms
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+        
+        // HANDLE UNTUK CLICK EVENT (PC)
+        window.handleClick = function(event, player, change) {
+            // CEK APAKAH SUDAH DIPROSES
+            if (isProcessing) {
+                event.preventDefault();
+                return;
+            }
+            
+            isProcessing = true;
+            event.preventDefault();
+            updateScore(player, change);
+            
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+        
+        // HANDLE UNTUK TAMBAH SET - TOUCH
+        window.handleSetTouch = function(event) {
+            if (isProcessing) {
+                event.preventDefault();
+                return;
+            }
+            
+            isProcessing = true;
+            event.preventDefault();
+            addSet();
+            
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+        
+        // HANDLE UNTUK TAMBAH SET - CLICK
+        window.handleSetClick = function(event) {
+            if (isProcessing) {
+                event.preventDefault();
+                return;
+            }
+            
+            isProcessing = true;
+            event.preventDefault();
+            addSet();
+            
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+        
+        // HANDLE RESET GAME - TOUCH
+        window.handleResetGameTouch = function(event) {
+            if (isProcessing) {
+                event.preventDefault();
+                return;
+            }
+            
+            isProcessing = true;
+            event.preventDefault();
+            resetCurrentGame();
+            
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+        
+        // HANDLE RESET GAME - CLICK
+        window.handleResetGameClick = function(event) {
+            if (isProcessing) {
+                event.preventDefault();
+                return;
+            }
+            
+            isProcessing = true;
+            event.preventDefault();
+            resetCurrentGame();
+            
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+        
+        // HANDLE RESET ALL - TOUCH
+        window.handleResetAllTouch = function(event) {
+            if (isProcessing) {
+                event.preventDefault();
+                return;
+            }
+            
+            isProcessing = true;
+            event.preventDefault();
+            resetMatch();
+            
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+        
+        // HANDLE RESET ALL - CLICK
+        window.handleResetAllClick = function(event) {
+            if (isProcessing) {
+                event.preventDefault();
+                return;
+            }
+            
+            isProcessing = true;
+            event.preventDefault();
+            resetMatch();
+            
+            setTimeout(() => {
+                isProcessing = false;
+            }, 300);
+        };
+        
+        // FUNGSI UPDATE SKOR - SEKARANG AMAN GA DOUBLE
+        function updateScore(player, change) {
+            console.log('Update skor:', player, change); // DEBUG
+            
+            if (matchFinished) {
+                alert('🏆 Pertandingan selesai! Klik Reset All');
+                return;
+            }
+            
+            if (player === 'left') {
+                scoreLeft += change;
+                if (scoreLeft < 0) scoreLeft = 0;
+                scoreLeftEl.textContent = scoreLeft;
+                // ANIMASI
+                scoreLeftEl.classList.add('score-update');
+                setTimeout(() => scoreLeftEl.classList.remove('score-update'), 200);
+            } else {
+                scoreRight += change;
+                if (scoreRight < 0) scoreRight = 0;
+                scoreRightEl.textContent = scoreRight;
+                // ANIMASI
+                scoreRightEl.classList.add('score-update');
+                setTimeout(() => scoreRightEl.classList.remove('score-update'), 200);
+            }
+            
+            updateMatchStatus();
+            highlightLeader();
+            checkSetWinCondition();
+        }
+        
+        // CEK KEMENANGAN SET
+        function checkSetWinCondition() {
+            if (scoreLeft >= 21 || scoreRight >= 21) {
+                const diff = Math.abs(scoreLeft - scoreRight);
+                if (diff >= 2) {
+                    if (scoreLeft > scoreRight) {
+                        matchStatusEl.innerHTML = `<i class="fas fa-trophy"></i> KIRI MENANG SET ${currentSet}! ➕ TAMBAH SET`;
+                    } else {
+                        matchStatusEl.innerHTML = `<i class="fas fa-trophy"></i> KANAN MENANG SET ${currentSet}! ➕ TAMBAH SET`;
+                    }
+                    matchStatusEl.style.background = '#d1fae5';
+                    matchStatusEl.style.color = '#065f46';
+                }
+            }
+            
+            if (scoreLeft === 20 && scoreRight === 20) {
+                matchStatusEl.innerHTML = `<i class="fas fa-exclamation-triangle"></i> DEUCE! SELISIH 2 POIN`;
+                matchStatusEl.style.background = '#fef9c3';
+                matchStatusEl.style.color = '#854d0e';
+            }
+            
+            if (scoreLeft === 29 && scoreRight === 29) {
+                matchStatusEl.innerHTML = `<i class="fas fa-bolt"></i> 29-29! POIN BERIKUTNYA PENENTU!`;
+                matchStatusEl.style.background = '#fed7aa';
+                matchStatusEl.style.color = '#9a3412';
+            }
+        }
+        
+        // TAMBAH SET
+        function addSet() {
+            console.log('Add set dipanggil');
+            
+            if (matchFinished) {
+                alert('🏆 Pertandingan sudah selesai!');
+                return;
+            }
+            
+            if (currentSet > maxSets) {
+                alert(`⛔ Pertandingan selesai! Pemenang: ${setWinsLeft > setWinsRight ? 'KIRI' : 'KANAN'}`);
+                return;
+            }
+            
+            // VALIDASI
+            if (scoreLeft === 0 && scoreRight === 0) {
+                alert('❌ Belum ada skor!');
+                return;
+            }
+            
+            if (scoreLeft === scoreRight) {
+                alert('❌ Skor seri! Lanjutkan sampai ada pemenang');
+                return;
+            }
+            
+            // CEK SELISIH SKOR KALAU SUDAH 21+
+            if (scoreLeft >= 21 || scoreRight >= 21) {
+                const diff = Math.abs(scoreLeft - scoreRight);
+                if (diff < 2) {
+                    alert('❌ Selisih skor minimal 2 poin!');
+                    return;
+                }
+            }
+            
+            // SIMPAN SKOR SET
+            setScoresLeft.push(scoreLeft);
+            setScoresRight.push(scoreRight);
+            
+            // HITUNG PEMENANG SET
+            if (scoreLeft > scoreRight) {
+                setWinsLeft++;
+            } else {
+                setWinsRight++;
+            }
+            
+            // UPDATE TAMPILAN SET
+            updateSetDisplay();
+            
+            // RESET SKOR GAME
+            scoreLeft = 0;
+            scoreRight = 0;
+            scoreLeftEl.textContent = scoreLeft;
+            scoreRightEl.textContent = scoreRight;
+            
+            // TAMBAH SET COUNTER
+            currentSet++;
+            
+            // UPDATE STATUS
+            matchStatusEl.innerHTML = `<i class="fas fa-check-circle"></i> SET ${currentSet-1} SELESAI! SET ${currentSet} DIMULAI`;
+            matchStatusEl.style.background = '#e6f3ff';
+            matchStatusEl.style.color = '#0a2472';
+            
+            // CEK PEMENANG PERTANDINGAN
+            checkMatchWinner();
+            highlightLeader();
+        }
+        
+        // UPDATE TAMPILAN SET
+        function updateSetDisplay() {
+            // RESET
+            setScoresLeftEl.innerHTML = '';
+            setScoresRightEl.innerHTML = '';
+            
+            // TAMPILKAN SET YANG SUDAH DIMAINKAN
+            for (let i = 0; i < setScoresLeft.length; i++) {
+                // KIRI
+                const sLeft = document.createElement('div');
+                sLeft.className = 'set-score';
+                sLeft.textContent = setScoresLeft[i];
+                
+                // KANAN
+                const sRight = document.createElement('div');
+                sRight.className = 'set-score';
+                sRight.textContent = setScoresRight[i];
+                
+                // TANDAI PEMENANG
+                if (setScoresLeft[i] > setScoresRight[i]) {
+                    sLeft.classList.add('won');
+                    sRight.classList.add('lost');
+                } else {
+                    sLeft.classList.add('lost');
+                    sRight.classList.add('won');
+                }
+                
+                setScoresLeftEl.appendChild(sLeft);
+                setScoresRightEl.appendChild(sRight);
+            }
+            
+            // PLACEHOLDER UNTUK SET SELANJUTNYA
+            for (let i = setScoresLeft.length; i < maxSets; i++) {
+                const pLeft = document.createElement('div');
+                pLeft.className = 'set-score';
+                pLeft.textContent = '-';
+                
+                const pRight = document.createElement('div');
+                pRight.className = 'set-score';
+                pRight.textContent = '-';
+                
+                setScoresLeftEl.appendChild(pLeft);
+                setScoresRightEl.appendChild(pRight);
+            }
+            
+            // UPDATE TOTAL SET MENANG
+            setTotalLeftEl.textContent = setWinsLeft;
+            setTotalRightEl.textContent = setWinsRight;
+            setBadgeLeftEl.textContent = setWinsLeft;
+            setBadgeRightEl.textContent = setWinsRight;
+        }
+        
+        // CEK PEMENANG PERTANDINGAN
+        function checkMatchWinner() {
+            if (setWinsLeft === 2) {
+                matchFinished = true;
+                matchStatusEl.innerHTML = `<i class="fas fa-crown"></i> <strong>🏆 PEMENANG: KIRI!</strong> (${setWinsLeft}-${setWinsRight})`;
+                matchStatusEl.style.background = '#d1fae5';
+                matchStatusEl.style.color = '#065f46';
+                playerLeftEl.classList.add('winner');
+                btnAddSet.disabled = true;
+                btnAddSet.style.opacity = '0.5';
+            } else if (setWinsRight === 2) {
+                matchFinished = true;
+                matchStatusEl.innerHTML = `<i class="fas fa-crown"></i> <strong>🏆 PEMENANG: KANAN!</strong> (${setWinsLeft}-${setWinsRight})`;
+                matchStatusEl.style.background = '#d1fae5';
+                matchStatusEl.style.color = '#065f46';
+                playerRightEl.classList.add('winner');
+                btnAddSet.disabled = true;
+                btnAddSet.style.opacity = '0.5';
+            }
+        }
+        
+        // UPDATE STATUS PERTANDINGAN
+        function updateMatchStatus() {
+            if (matchFinished) return;
+            
+            matchStatusEl.innerHTML = `<i class="fas fa-users"></i> KIRI ${scoreLeft} : ${scoreRight} KANAN • SET ${currentSet}`;
+            matchStatusEl.style.background = '#f1f5f9';
+            matchStatusEl.style.color = '#0a2472';
+        }
+        
+        // HIGHLIGHT PEMIMPIN
+        function highlightLeader() {
+            playerLeftEl.classList.remove('active');
+            playerRightEl.classList.remove('active');
+            
+            if (scoreLeft > scoreRight) {
+                playerLeftEl.classList.add('active');
+            } else if (scoreRight > scoreLeft) {
+                playerRightEl.classList.add('active');
+            }
+        }
+        
+        // RESET GAME SAAT INI
+        function resetCurrentGame() {
+            scoreLeft = 0;
+            scoreRight = 0;
+            scoreLeftEl.textContent = scoreLeft;
+            scoreRightEl.textContent = scoreRight;
+            
+            playerLeftEl.classList.remove('active', 'winner');
+            playerRightEl.classList.remove('active', 'winner');
+            
+            updateMatchStatus();
+        }
+        
+        // RESET SELURUH PERTANDINGAN
+        function resetMatch() {
+            // RESET SEMUA STATE
+            scoreLeft = 0;
+            scoreRight = 0;
+            setScoresLeft = [];
+            setScoresRight = [];
+            setWinsLeft = 0;
+            setWinsRight = 0;
+            currentSet = 1;
+            matchFinished = false;
+            
+            // RESET DOM
+            scoreLeftEl.textContent = scoreLeft;
+            scoreRightEl.textContent = scoreRight;
+            
+            // RESET CLASS
+            playerLeftEl.classList.remove('active', 'winner');
+            playerRightEl.classList.remove('active', 'winner');
+            
+            // ENABLE TOMBOL SET
+            btnAddSet.disabled = false;
+            btnAddSet.style.opacity = '1';
+            
+            // UPDATE DISPLAY
+            updateSetDisplay();
+            updateMatchStatus();
+            
+            // NOTIFIKASI
+            matchStatusEl.innerHTML = '<i class="fas fa-check"></i> PERTANDINGAN DIRESET!';
+            matchStatusEl.style.background = '#fee2e2';
+            matchStatusEl.style.color = '#991b1b';
+            
+            setTimeout(() => {
+                updateMatchStatus();
+            }, 1500);
+        }
+        
+        // INITIALISASI
+        function init() {
+            updateSetDisplay();
+            updateMatchStatus();
+            console.log('✅ Papan Skor Siap - FIX LOMPAT 2!');
+        }
+        
+        init();
+    </script>
+</body>
+</html>

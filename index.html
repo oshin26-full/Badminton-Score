@@ -6,7 +6,7 @@
     <title>Papan Skor Badminton</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* RESET TOTAL UNTUK TOUCH */
+        
         * {
             margin: 0;
             padding: 0;
@@ -38,7 +38,6 @@
             border: 1px solid rgba(255,255,255,0.3);
         }
         
-        /* HEADER */
         .header {
             background: linear-gradient(135deg, #0a2472, #1e3a8a);
             color: white;
@@ -66,7 +65,6 @@
             opacity: 0.9;
         }
         
-        /* SCORE UTAMA - KIRI KANAN */
         .score-container {
             display: flex;
             flex-direction: row;
@@ -125,7 +123,6 @@
             text-shadow: 4px 4px 0 #e2e8f0;
         }
         
-        /* TOMBOL BESAR UNTUK TOUCH */
         .controls {
             display: flex;
             flex-direction: column;
@@ -170,7 +167,6 @@
             color: white;
         }
         
-        /* SET SECTION */
         .set-section {
             padding: 16px 12px;
             background: #e6f3ff;
@@ -329,7 +325,6 @@
             font-weight: 600;
         }
         
-        /* MATCH INFO */
         .match-info {
             padding: 16px 12px;
             background: white;
@@ -415,7 +410,6 @@
             color: #2563eb !important;
         }
         
-        /* FIX UNTUK TOUCH DI HP */
         button, .btn, .btn-reset, .btn-set, .btn-increment, .btn-decrement {
             cursor: pointer;
             touch-action: manipulation;
@@ -426,12 +420,10 @@
             appearance: none;
         }
         
-        /* HILANGKAN DELAY TAP DI HP */
         a, button, input, optgroup, select, textarea {
             -webkit-tap-highlight-color: transparent;
         }
         
-        /* UNTUK LAYAR KECIL */
         @media (max-width: 380px) {
             .score { font-size: 4.2rem; }
             .btn { padding: 16px 0; font-size: 2rem; }
@@ -442,7 +434,6 @@
 </head>
 <body>
     <div class="container">
-        <!-- HEADER -->
         <div class="header">
             <h1>
                 <i class="fas fa-shuttlecock"></i> BADMINTON
@@ -450,16 +441,13 @@
             <p>⬅️ KIRI • KANAN ➡️</p>
         </div>
         
-        <!-- ===== SKOR KIRI VS KANAN ===== -->
         <div class="score-container">
-            <!-- PEMAIN KIRI -->
             <div class="player" id="playerLeft">
                 <div class="player-name">
                     <i class="fas fa-user"></i> KIRI
                 </div>
                 <div class="score" id="scoreLeft">0</div>
                 <div class="controls">
-                    <!-- FIX: PAKAI SATU EVENT AJA, YANG LAIN PREVENT DEFAULT -->
                     <button class="btn btn-decrement" ontouchstart="handleTouch(event, 'left', -1)" onclick="handleClick(event, 'left', -1)">
                         <i class="fas fa-minus"></i>
                     </button>
@@ -469,14 +457,12 @@
                 </div>
             </div>
             
-            <!-- PEMAIN KANAN -->
             <div class="player" id="playerRight">
                 <div class="player-name">
                     <i class="fas fa-user"></i> KANAN
                 </div>
                 <div class="score" id="scoreRight">0</div>
                 <div class="controls">
-                    <!-- FIX: PAKAI SATU EVENT AJA, YANG LAIN PREVENT DEFAULT -->
                     <button class="btn btn-decrement" ontouchstart="handleTouch(event, 'right', -1)" onclick="handleClick(event, 'right', -1)">
                         <i class="fas fa-minus"></i>
                     </button>
@@ -487,7 +473,6 @@
             </div>
         </div>
         
-        <!-- SET GAME -->
         <div class="set-section">
             <div class="set-header">
                 <div class="set-title">
@@ -499,28 +484,24 @@
             </div>
             
             <div class="set-container">
-                <!-- SET KIRI -->
                 <div class="set-score-card">
                     <div class="set-player-name">
                         <i class="fas fa-user"></i> KIRI
                         <span class="set-badge" id="setBadgeLeft">0</span>
                     </div>
                     <div class="set-scores" id="setScoresLeft">
-                        <!-- JS FILL -->
                     </div>
                     <div class="set-total">
                         MENANG: <span id="setTotalLeft">0</span>
                     </div>
                 </div>
                 
-                <!-- SET KANAN -->
                 <div class="set-score-card">
                     <div class="set-player-name">
                         <i class="fas fa-user"></i> KANAN
                         <span class="set-badge" id="setBadgeRight">0</span>
                     </div>
                     <div class="set-scores" id="setScoresRight">
-                        <!-- JS FILL -->
                     </div>
                     <div class="set-total">
                         MENANG: <span id="setTotalRight">0</span>
@@ -535,7 +516,6 @@
             </div>
         </div>
         
-        <!-- STATUS & RESET -->
         <div class="match-info">
             <div class="match-status" id="matchStatus">
                 <i class="fas fa-play"></i> KIRI 0 : 0 KANAN • SET 1
@@ -551,18 +531,13 @@
             </div>
         </div>
         
-        <!-- FOOTER -->
         <div class="footer">
             <p>🏸 Badminton Score | Design by AHMAD BAHREISY (OSY)</p>
         </div>
     </div>
 
     <script>
-        // =========================================
-        // PAPAN SKOR BADMINTON - FIX LOMPAT 2
-        // =========================================
-        
-        // STATE
+
         let scoreLeft = 0;
         let scoreRight = 0;
         let setScoresLeft = [];
@@ -573,10 +548,8 @@
         const maxSets = 3;
         let matchFinished = false;
         
-        // FLAG UNTUK CEK DOUBLE EXECUTION
         let isProcessing = false;
         
-        // AMBIL ELEMEN
         const scoreLeftEl = document.getElementById('scoreLeft');
         const scoreRightEl = document.getElementById('scoreRight');
         const setScoresLeftEl = document.getElementById('setScoresLeft');
@@ -590,29 +563,22 @@
         const playerLeftEl = document.getElementById('playerLeft');
         const playerRightEl = document.getElementById('playerRight');
         
-        // ========== FIX UTAMA: CEK DOUBLE EXECUTION ==========
-        
-        // HANDLE UNTUK TOUCH EVENT (HP)
         window.handleTouch = function(event, player, change) {
-            // CEK APAKAH SUDAH DIPROSES
             if (isProcessing) {
                 event.preventDefault();
                 return;
             }
             
             isProcessing = true;
-            event.preventDefault(); // MASTIKAN GA DOUBLE
+            event.preventDefault(); 
             updateScore(player, change);
             
-            // RESET FLAG SETELAH 300ms
             setTimeout(() => {
                 isProcessing = false;
             }, 300);
         };
         
-        // HANDLE UNTUK CLICK EVENT (PC)
         window.handleClick = function(event, player, change) {
-            // CEK APAKAH SUDAH DIPROSES
             if (isProcessing) {
                 event.preventDefault();
                 return;
@@ -626,8 +592,7 @@
                 isProcessing = false;
             }, 300);
         };
-        
-        // HANDLE UNTUK TAMBAH SET - TOUCH
+
         window.handleSetTouch = function(event) {
             if (isProcessing) {
                 event.preventDefault();
@@ -643,7 +608,6 @@
             }, 300);
         };
         
-        // HANDLE UNTUK TAMBAH SET - CLICK
         window.handleSetClick = function(event) {
             if (isProcessing) {
                 event.preventDefault();
@@ -659,7 +623,6 @@
             }, 300);
         };
         
-        // HANDLE RESET GAME - TOUCH
         window.handleResetGameTouch = function(event) {
             if (isProcessing) {
                 event.preventDefault();
@@ -675,7 +638,6 @@
             }, 300);
         };
         
-        // HANDLE RESET GAME - CLICK
         window.handleResetGameClick = function(event) {
             if (isProcessing) {
                 event.preventDefault();
@@ -691,7 +653,6 @@
             }, 300);
         };
         
-        // HANDLE RESET ALL - TOUCH
         window.handleResetAllTouch = function(event) {
             if (isProcessing) {
                 event.preventDefault();
@@ -707,7 +668,6 @@
             }, 300);
         };
         
-        // HANDLE RESET ALL - CLICK
         window.handleResetAllClick = function(event) {
             if (isProcessing) {
                 event.preventDefault();
@@ -723,9 +683,8 @@
             }, 300);
         };
         
-        // FUNGSI UPDATE SKOR - SEKARANG AMAN GA DOUBLE
         function updateScore(player, change) {
-            console.log('Update skor:', player, change); // DEBUG
+            console.log('Update skor:', player, change);
             
             if (matchFinished) {
                 alert('🏆 Pertandingan selesai! Klik Reset All');
@@ -736,14 +695,12 @@
                 scoreLeft += change;
                 if (scoreLeft < 0) scoreLeft = 0;
                 scoreLeftEl.textContent = scoreLeft;
-                // ANIMASI
                 scoreLeftEl.classList.add('score-update');
                 setTimeout(() => scoreLeftEl.classList.remove('score-update'), 200);
             } else {
                 scoreRight += change;
                 if (scoreRight < 0) scoreRight = 0;
                 scoreRightEl.textContent = scoreRight;
-                // ANIMASI
                 scoreRightEl.classList.add('score-update');
                 setTimeout(() => scoreRightEl.classList.remove('score-update'), 200);
             }
@@ -753,7 +710,6 @@
             checkSetWinCondition();
         }
         
-        // CEK KEMENANGAN SET
         function checkSetWinCondition() {
             if (scoreLeft >= 21 || scoreRight >= 21) {
                 const diff = Math.abs(scoreLeft - scoreRight);
@@ -781,7 +737,6 @@
             }
         }
         
-        // TAMBAH SET
         function addSet() {
             console.log('Add set dipanggil');
             
@@ -794,8 +749,7 @@
                 alert(`⛔ Pertandingan selesai! Pemenang: ${setWinsLeft > setWinsRight ? 'KIRI' : 'KANAN'}`);
                 return;
             }
-            
-            // VALIDASI
+
             if (scoreLeft === 0 && scoreRight === 0) {
                 alert('❌ Belum ada skor!');
                 return;
@@ -806,7 +760,6 @@
                 return;
             }
             
-            // CEK SELISIH SKOR KALAU SUDAH 21+
             if (scoreLeft >= 21 || scoreRight >= 21) {
                 const diff = Math.abs(scoreLeft - scoreRight);
                 if (diff < 2) {
@@ -815,58 +768,47 @@
                 }
             }
             
-            // SIMPAN SKOR SET
             setScoresLeft.push(scoreLeft);
             setScoresRight.push(scoreRight);
             
-            // HITUNG PEMENANG SET
             if (scoreLeft > scoreRight) {
                 setWinsLeft++;
             } else {
                 setWinsRight++;
             }
             
-            // UPDATE TAMPILAN SET
             updateSetDisplay();
             
-            // RESET SKOR GAME
             scoreLeft = 0;
             scoreRight = 0;
             scoreLeftEl.textContent = scoreLeft;
             scoreRightEl.textContent = scoreRight;
             
-            // TAMBAH SET COUNTER
             currentSet++;
             
-            // UPDATE STATUS
             matchStatusEl.innerHTML = `<i class="fas fa-check-circle"></i> SET ${currentSet-1} SELESAI! SET ${currentSet} DIMULAI`;
             matchStatusEl.style.background = '#e6f3ff';
             matchStatusEl.style.color = '#0a2472';
             
-            // CEK PEMENANG PERTANDINGAN
             checkMatchWinner();
             highlightLeader();
         }
         
-        // UPDATE TAMPILAN SET
+    
         function updateSetDisplay() {
-            // RESET
+            
             setScoresLeftEl.innerHTML = '';
             setScoresRightEl.innerHTML = '';
             
-            // TAMPILKAN SET YANG SUDAH DIMAINKAN
             for (let i = 0; i < setScoresLeft.length; i++) {
-                // KIRI
                 const sLeft = document.createElement('div');
                 sLeft.className = 'set-score';
                 sLeft.textContent = setScoresLeft[i];
                 
-                // KANAN
                 const sRight = document.createElement('div');
                 sRight.className = 'set-score';
                 sRight.textContent = setScoresRight[i];
                 
-                // TANDAI PEMENANG
                 if (setScoresLeft[i] > setScoresRight[i]) {
                     sLeft.classList.add('won');
                     sRight.classList.add('lost');
@@ -879,7 +821,6 @@
                 setScoresRightEl.appendChild(sRight);
             }
             
-            // PLACEHOLDER UNTUK SET SELANJUTNYA
             for (let i = setScoresLeft.length; i < maxSets; i++) {
                 const pLeft = document.createElement('div');
                 pLeft.className = 'set-score';
@@ -893,14 +834,12 @@
                 setScoresRightEl.appendChild(pRight);
             }
             
-            // UPDATE TOTAL SET MENANG
             setTotalLeftEl.textContent = setWinsLeft;
             setTotalRightEl.textContent = setWinsRight;
             setBadgeLeftEl.textContent = setWinsLeft;
             setBadgeRightEl.textContent = setWinsRight;
         }
         
-        // CEK PEMENANG PERTANDINGAN
         function checkMatchWinner() {
             if (setWinsLeft === 2) {
                 matchFinished = true;
@@ -921,7 +860,6 @@
             }
         }
         
-        // UPDATE STATUS PERTANDINGAN
         function updateMatchStatus() {
             if (matchFinished) return;
             
@@ -930,7 +868,6 @@
             matchStatusEl.style.color = '#0a2472';
         }
         
-        // HIGHLIGHT PEMIMPIN
         function highlightLeader() {
             playerLeftEl.classList.remove('active');
             playerRightEl.classList.remove('active');
@@ -942,7 +879,6 @@
             }
         }
         
-        // RESET GAME SAAT INI
         function resetCurrentGame() {
             scoreLeft = 0;
             scoreRight = 0;
@@ -955,9 +891,7 @@
             updateMatchStatus();
         }
         
-        // RESET SELURUH PERTANDINGAN
         function resetMatch() {
-            // RESET SEMUA STATE
             scoreLeft = 0;
             scoreRight = 0;
             setScoresLeft = [];
@@ -967,23 +901,18 @@
             currentSet = 1;
             matchFinished = false;
             
-            // RESET DOM
             scoreLeftEl.textContent = scoreLeft;
             scoreRightEl.textContent = scoreRight;
             
-            // RESET CLASS
             playerLeftEl.classList.remove('active', 'winner');
             playerRightEl.classList.remove('active', 'winner');
             
-            // ENABLE TOMBOL SET
             btnAddSet.disabled = false;
             btnAddSet.style.opacity = '1';
             
-            // UPDATE DISPLAY
             updateSetDisplay();
             updateMatchStatus();
             
-            // NOTIFIKASI
             matchStatusEl.innerHTML = '<i class="fas fa-check"></i> PERTANDINGAN DIRESET!';
             matchStatusEl.style.background = '#fee2e2';
             matchStatusEl.style.color = '#991b1b';
@@ -993,7 +922,6 @@
             }, 1500);
         }
         
-        // INITIALISASI
         function init() {
             updateSetDisplay();
             updateMatchStatus();

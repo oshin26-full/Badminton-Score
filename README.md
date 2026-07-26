@@ -1,2 +1,2 @@
-# Badminton-Score
-Badminton Score adalah aplikasi berbasis web yang dirancang untuk mempermudah pencatatan skor pertandingan bulutangkis secara digital. Aplikasi ini membantu pemain, wasit, maupun penonton dalam memantau jalannya pertandingan dengan tampilan yang sederhana, responsif, dan mudah digunakan. Teknologi yang Digunakan  HTML  CSS  JavaScript
+Badminton-Score
+Badminton Score is a web-based application designed to simplify the digital tracking of badminton match scores. This application helps players, referees, and spectators monitor the progress of matches with a simple, responsive, and user-friendly interface. Technologies Used: HTML, CSS, JavaScript
